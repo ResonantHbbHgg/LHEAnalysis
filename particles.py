@@ -22,7 +22,7 @@ class particle(object):
         self.pt = (self.px**2 + self.py**2)**0.5
         self.theta = acos(self.pz / self.p)
         try:
-            self.phi = acos(self.py / self.pt)
+            self.phi = copysign( acos(self.px / self.pt), self.py )
         except ZeroDivisionError:
             self.phi = 0.
         try:
