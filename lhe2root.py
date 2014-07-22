@@ -7,8 +7,8 @@ import xml.etree.ElementTree as ET
 from particles import *
 # Argument parser setup
 parser = argparse.ArgumentParser()
-parser.add_argument("--infile", help="File in LHE format to be read", nargs='?', type=str, default="GluGluToHHTo2B2G_0hhh_M-125_8TeV_madgraph.lhe")
-parser.add_argument("--outfile", help="File in ROOT format for output", nargs='?', type=str, default="test.root")
+parser.add_argument("--infile", help="File in LHE format to be read", nargs='?', type=str, default="GluGluToHHTo2B2G_2hhh_M-125_8TeV_madgraph.lhe")
+parser.add_argument("--outfile", help="File in ROOT format for output", nargs='?', type=str, default="ggHH2.root")
 parser.add_argument("--outtree", help="output TTree name", nargs='?', type=str, default="test")
 
 args = parser.parse_args()
@@ -96,10 +96,10 @@ gr_hbb_p4_eta = numpy.zeros(1, dtype=float)
 gr_hbb_p4_phi = numpy.zeros(1, dtype=float)
 gr_hbb_p4_mass = numpy.zeros(1, dtype=float)
 
-gr_radion_p4_pt = numpy.zeros(1, dtype=float)
-gr_radion_p4_eta = numpy.zeros(1, dtype=float)
-gr_radion_p4_phi = numpy.zeros(1, dtype=float)
-gr_radion_p4_mass = numpy.zeros(1, dtype=float)
+#gr_radion_p4_pt = numpy.zeros(1, dtype=float)
+#gr_radion_p4_eta = numpy.zeros(1, dtype=float)
+#gr_radion_p4_phi = numpy.zeros(1, dtype=float)
+#gr_radion_p4_mass = numpy.zeros(1, dtype=float)
 
 
 # Create the branch to store the variable in the tree
@@ -131,10 +131,10 @@ outtree.Branch('gr_hbb_p4_eta', gr_hbb_p4_eta, 'gr_hbb_p4_eta/D')
 outtree.Branch('gr_hbb_p4_phi', gr_hbb_p4_phi, 'gr_hbb_p4_phi/D')
 outtree.Branch('gr_hbb_p4_mass', gr_hbb_p4_mass, 'gr_hbb_p4_mass/D')
 
-outtree.Branch('gr_radion_p4_pt', gr_radion_p4_pt, 'gr_radion_p4_pt/D')
-outtree.Branch('gr_radion_p4_eta', gr_radion_p4_eta, 'gr_radion_p4_eta/D')
-outtree.Branch('gr_radion_p4_phi', gr_radion_p4_phi, 'gr_radion_p4_phi/D')
-outtree.Branch('gr_radion_p4_mass', gr_radion_p4_mass, 'gr_radion_p4_mass/D')
+#outtree.Branch('gr_radion_p4_pt', gr_radion_p4_pt, 'gr_radion_p4_pt/D')
+#outtree.Branch('gr_radion_p4_eta', gr_radion_p4_eta, 'gr_radion_p4_eta/D')
+#outtree.Branch('gr_radion_p4_phi', gr_radion_p4_phi, 'gr_radion_p4_phi/D')
+#outtree.Branch('gr_radion_p4_mass', gr_radion_p4_mass, 'gr_radion_p4_mass/D')
 
 
 # Loop over events
@@ -158,6 +158,10 @@ for event in eventlist:
     isFirst = True
     for ip, p in enumerate(event):
         #print p.index, p.pid, p.pt
+        #gr_radion_p4_pt[0] = p.pt
+        #gr_radion_p4_eta[0] = p.eta
+        #gr_radion_p4_phi[0] = p.phi
+        #gr_radion_p4_mass[0] = p.mass
         if ip == 0 or ip == 1:
             # This is a gluon, we don't care
             continue
@@ -241,13 +245,15 @@ for event in eventlist:
         gr_g1_p4_phi[0] = phi_tempg2
         gr_g1_p4_mass[0] = mass_tempg2
 
+   
+
 # Since we are dealing with LO, hbb + hgg is exactly 0
-#    hgg = TLorentzVector(0., 0., 0., 0.)
+#    hgg = TLorentzVector()
 #    hgg.SetPtEtaPhiM(gr_hgg_p4_pt[0], gr_hgg_p4_eta[0], gr_hgg_p4_phi[0], gr_hgg_p4_mass[0])
-#    hbb = TLorentzVector(0., 0., 0., 0.)
+#    hbb = TLorentzVector()
 #    hbb.SetPtEtaPhiM(gr_hbb_p4_pt[0], gr_hbb_p4_eta[0], gr_hbb_p4_phi[0], gr_hbb_p4_mass[0])
 #    radion = hbb + hgg
-#    print type(radion), radion.Pt(), radion.Eta(), radion.Phi(), radion.M()
+    #print type(radion), radion.Pt(), radion.Pz(), radion.M()
 #    gr_radion_p4_pt[0] = radion.Pt()
 #    gr_radion_p4_eta[0] = radion.Eta()
 #    gr_radion_p4_phi[0] = radion.Phi()
@@ -255,8 +261,6 @@ for event in eventlist:
 
     outtree.Fill()
    
-
-
 # write the tree into the output file and close the file
 outfile.Write()
 outfile.Close()
