@@ -22,16 +22,13 @@ class particle(object):
         self.pt = (self.px**2 + self.py**2)**0.5
         self.theta = acos(self.pz / self.p)
         try:
-            self.phi = acos(self.px / self.pt)
+            self.phi = copysign( acos(self.px / self.pt), self.py )
         except ZeroDivisionError:
             self.phi = 0.
         try:
             self.eta = -log(tan(self.theta / 2.))
         except ValueError:
             self.eta = copysign(9999.0, self.pz / self.p)
-
-        if self.py < 0:
-            self.phi = -self.phi
 
 def deltaR(a, b):
     deta = a.eta - b.eta
